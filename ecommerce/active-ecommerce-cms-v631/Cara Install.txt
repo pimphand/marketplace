@@ -1,0 +1,10 @@
+1. Running di php 7.4 
+2. Copy folder project ke xampp/htdocs atau public web server lainnya
+3. Buat database baru pada PhpMyAdamin
+4. Setting koneksi database pada file .env 
+5. Import database.sql melalui PhpMyAdamin
+8. Akses project anda pada browser misal : localhost/activeecommerce
+9. Login dan aplikasi sudah bisa digunakan:
+- username: admin@admin.com	
+- password: 123456
+10. Jika terdapat kesulitan bisa hubungi admin kami dan installasi bisa dibantu melalui remote menggunakan aplikasi ultraviewer
