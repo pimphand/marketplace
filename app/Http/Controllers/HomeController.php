@@ -21,6 +21,7 @@ use App\Mail\SecondEmailVerifyMailManager;
 use App\Models\AffiliateConfig;
 use App\Models\Page;
 use App\Models\ProductQuery;
+use App\Models\Service;
 use Mail;
 use Illuminate\Auth\Events\PasswordReset;
 use Cache;
@@ -632,5 +633,48 @@ class HomeController extends Controller
     {
         $products = filter_products(Product::where('added_by', 'admin'))->with('taxes')->paginate(12)->appends(request()->query());
         return view('frontend.inhouse_products', compact('products'));
+    }
+
+    public function service($slug)
+    {
+        $service = Service::whereSlug($slug)->first();
+        return view('frontend.service_detail', compact('service'));
+    }
+
+    public function serviceApply(Request $request, $slug)
+    {
+        $request->validate([
+            'resume' => 'required|mimes:pdf,jpg,doc|max:2048',
+            'letter' => 'nullable|mimes:pdf,jpg,doc|max:2048',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
+        ]);
+
+        $service = Service::whereSlug($slug)->first();
+
+        $fileResume = $request->file('resume');
+        $pathResume = 'uploads/applies/resume';
+        $resume = Str::random(40) . '.' . $fileResume->getClientOriginalExtension();
+        $fileResume->move(public_path($pathResume), $resume);
+
+        if ($request->hasFile('letter')) {
+            $file = $request->file('letter');
+            $pathLetter = 'uploads/applies/letter';
+            $letter = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path($pathLetter), $letter);
+        }
+
+        $service->applies()->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'resume' => $resume,
+            'letter' => $request->hasFile('letter') ? $letter : null,
+        ]);
+
+        return $service;
     }
 }

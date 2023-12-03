@@ -17,7 +17,13 @@ class CreateServicesTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->string('type')->nullable();
+            $table->string('location')->nullable();
+            $table->string('salary_range');
+            $table->longText('description');
+            $table->longText('qualification');
+            $table->longText('taks');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

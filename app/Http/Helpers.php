@@ -106,6 +106,25 @@ if (!function_exists('filter_products')) {
         }
     }
 }
+//filter products based on vendor activation system
+if (!function_exists('filter_service')) {
+    function filter_service($service)
+    {
+        $verified_sellers = verified_sellers_id();
+        if (get_setting('vendor_system_activation') == 1) {
+            return $service->where('approved', '1')
+                ->where('status', '1')
+                ->where('auction_product', 0)
+                ->where(function ($p) use ($verified_sellers) {
+                    $p->where('added_by', 'admin')->orWhere(function ($q) use ($verified_sellers) {
+                        $q->whereIn('user_id', $verified_sellers);
+                    });
+                });
+        } else {
+            return $service->where('published', '1')->where('auction_product', 0)->where('added_by', 'admin');
+        }
+    }
+}
 
 //cache products based on category
 if (!function_exists('get_cached_products')) {
@@ -189,7 +208,7 @@ if (!function_exists('format_price')) {
         }
 
 
-        // Minimize the price 
+        // Minimize the price
         if ($isMinimize) {
             $temp = number_format($price / 1000000000, get_setting('no_of_decimals'), ".", "");
 
@@ -273,7 +292,7 @@ if (!function_exists('cart_product_price')) {
             $price = $product->bids->max('amount');
         }
 
-        //calculation of taxes 
+        //calculation of taxes
         if ($tax) {
             $taxAmount = 0;
             foreach ($product->taxes as $product_tax) {
@@ -324,7 +343,7 @@ if (!function_exists('cart_product_tax')) {
             }
         }
 
-        //calculation of taxes 
+        //calculation of taxes
         $tax = 0;
         foreach ($product->taxes as $product_tax) {
             if ($product_tax->tax_type == 'percent') {
@@ -1287,7 +1306,7 @@ if (!function_exists('get_url_params')) {
 if (!function_exists('top10_brands')) {
     function top10_brands()
     {
-       $top10_brands = Cache::rememberForever('featured_categories', function () {
+        $top10_brands = Cache::rememberForever('featured_categories', function () {
             return Category::where('featured', 1)->whereTop(1)->get();
         });
 

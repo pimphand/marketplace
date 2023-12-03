@@ -11,12 +11,13 @@ use Illuminate\Http\Request;
 
 class CarrierController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         // Staff Permission Check
-        $this->middleware(['permission:manage_carriers'])->only('index','create','edit','destroy');
+        $this->middleware(['permission:manage_carriers'])->only('index', 'create', 'edit', 'destroy');
     }
 
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -27,7 +28,7 @@ class CarrierController extends Controller
         return view('backend.setup_configurations.carriers.index', compact('carriers'));
     }
 
-     /**
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -35,7 +36,7 @@ class CarrierController extends Controller
     public function create()
     {
         $zones = Zone::get();
-        return view('backend.setup_configurations.carriers.create',compact('zones'));
+        return view('backend.setup_configurations.carriers.create', compact('zones'));
     }
 
     /**
@@ -55,8 +56,8 @@ class CarrierController extends Controller
         $carrier->save();
 
         // if not free shipping, then add the carrier ranges and prices
-        if($free_shipping == 0){
-            for($i=0; $i < count($request->delimiter1); $i++){
+        if ($free_shipping == 0) {
+            for ($i = 0; $i < count($request->delimiter1); $i++) {
 
                 // Add Carrier ranges
                 $carrier_range                  = new CarrierRange;
@@ -67,7 +68,7 @@ class CarrierController extends Controller
                 $carrier_range->save();
 
                 // Add carrier range prices
-                foreach($request->zones as $zone){
+                foreach ($request->zones as $zone) {
                     $carrier_range_price =  new CarrierRangePrice;
                     $carrier_range_price->carrier_id = $carrier->id;
                     $carrier_range_price->carrier_range_id = $carrier_range->id;
@@ -91,10 +92,10 @@ class CarrierController extends Controller
     {
         $carrier = Carrier::findOrFail($id);
         $zones = Zone::get();
-        return view('backend.setup_configurations.carriers.edit',compact('zones','carrier'));
+        return view('backend.setup_configurations.carriers.edit', compact('zones', 'carrier'));
     }
 
-     /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -115,8 +116,8 @@ class CarrierController extends Controller
         $carrier->carrier_range_prices()->delete();
 
         // if not free shipping, then add the carrier ranges and prices
-        if($free_shipping == 0){
-            for($i=0; $i < count($request->delimiter1); $i++){
+        if ($free_shipping == 0) {
+            for ($i = 0; $i < count($request->delimiter1); $i++) {
 
                 // Add Carrier ranges
                 $carrier_range                  = new CarrierRange;
@@ -127,7 +128,7 @@ class CarrierController extends Controller
                 $carrier_range->save();
 
                 // Add carrier range prices
-                foreach($request->zones as $zone){
+                foreach ($request->zones as $zone) {
                     $carrier_range_price =  new CarrierRangePrice;
                     $carrier_range_price->carrier_id = $carrier->id;
                     $carrier_range_price->carrier_range_id = $carrier_range->id;
@@ -150,10 +151,10 @@ class CarrierController extends Controller
     public function destroy($id)
     {
         $carrier = Carrier::findOrFail($id);
-        
+
         $carrier->carrier_ranges()->delete();
         $carrier->carrier_range_prices()->delete();
-        
+
         Carrier::destroy($id);
 
         flash(translate('Carrier has been deleted successfully'))->success();
@@ -165,9 +166,48 @@ class CarrierController extends Controller
     {
         $carrier = Carrier::findOrFail($request->id);
         $carrier->status = $request->status;
-        if($carrier->save()){
+        if ($carrier->save()) {
             return 1;
         }
         return 0;
+    }
+
+    // Carrier raja ongkir
+    public function rajaOngkir(Request $request)
+    {
+        $curl = curl_init();
+
+        $origin = $request->origin; // Replace with your actual origin
+        $destination = $request->destination; // Replace with your actual destination
+        $weight = $request->weight; // Replace with your actual weight
+        $apiKey = "d80d885534b64387d8d403cc5372cc98"; // Replace with your actual API key
+
+        $data = "origin=$origin&destination=$destination&weight=$weight";
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => array(
+                "content-type: application/x-www-form-urlencoded",
+                "key: $apiKey"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            return $response;
+        }
     }
 }

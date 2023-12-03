@@ -4,6 +4,7 @@
 @else
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @endif
+
 <head>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -21,34 +22,36 @@
     @yield('meta')
 
     @if(!isset($detailedProduct) && !isset($customer_product) && !isset($shop) && !isset($page) && !isset($blog))
-        <!-- Schema.org markup for Google+ -->
-        <meta itemprop="name" content="{{ get_setting('meta_title') }}">
-        <meta itemprop="description" content="{{ get_setting('meta_description') }}">
-        <meta itemprop="image" content="{{ uploaded_asset(get_setting('meta_image')) }}">
+    <!-- Schema.org markup for Google+ -->
+    <meta itemprop="name" content="{{ get_setting('meta_title') }}">
+    <meta itemprop="description" content="{{ get_setting('meta_description') }}">
+    <meta itemprop="image" content="{{ uploaded_asset(get_setting('meta_image')) }}">
 
-        <!-- Twitter Card data -->
-        <meta name="twitter:card" content="product">
-        <meta name="twitter:site" content="@publisher_handle">
-        <meta name="twitter:title" content="{{ get_setting('meta_title') }}">
-        <meta name="twitter:description" content="{{ get_setting('meta_description') }}">
-        <meta name="twitter:creator" content="@author_handle">
-        <meta name="twitter:image" content="{{ uploaded_asset(get_setting('meta_image')) }}">
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="product">
+    <meta name="twitter:site" content="@publisher_handle">
+    <meta name="twitter:title" content="{{ get_setting('meta_title') }}">
+    <meta name="twitter:description" content="{{ get_setting('meta_description') }}">
+    <meta name="twitter:creator" content="@author_handle">
+    <meta name="twitter:image" content="{{ uploaded_asset(get_setting('meta_image')) }}">
 
-        <!-- Open Graph data -->
-        <meta property="og:title" content="{{ get_setting('meta_title') }}" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="{{ route('home') }}" />
-        <meta property="og:image" content="{{ uploaded_asset(get_setting('meta_image')) }}" />
-        <meta property="og:description" content="{{ get_setting('meta_description') }}" />
-        <meta property="og:site_name" content="{{ env('APP_NAME') }}" />
-        <meta property="fb:app_id" content="{{ env('FACEBOOK_PIXEL_ID') }}">
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{{ get_setting('meta_title') }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ route('home') }}" />
+    <meta property="og:image" content="{{ uploaded_asset(get_setting('meta_image')) }}" />
+    <meta property="og:description" content="{{ get_setting('meta_description') }}" />
+    <meta property="og:site_name" content="{{ env('APP_NAME') }}" />
+    <meta property="fb:app_id" content="{{ env('FACEBOOK_PIXEL_ID') }}">
     @endif
 
     <!-- Favicon -->
     <link rel="icon" href="{{ uploaded_asset(get_setting('site_icon')) }}">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap"
+        rel="stylesheet">
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{ static_asset('assets/css/vendors.css') }}">
@@ -86,29 +89,53 @@
     </script>
 
     <style>
-        body{
+        body {
             font-family: 'Open Sans', sans-serif;
             font-weight: 400;
         }
-        :root{
-            --primary: {{ get_setting('base_color', '#e62d04') }};
-            --hov-primary: {{ get_setting('base_hov_color', '#c52907') }};
-            --soft-primary: {{ hex2rgba(get_setting('base_color','#e62d04'),.15) }};
+
+        :root {
+            --primary: {
+                    {
+                    get_setting('base_color', '#e62d04')
+                }
+            }
+
+            ;
+
+            --hov-primary: {
+                    {
+                    get_setting('base_hov_color', '#c52907')
+                }
+            }
+
+            ;
+
+            --soft-primary: {
+                    {
+                    hex2rgba(get_setting('base_color', '#e62d04'), .15)
+                }
+            }
+
+            ;
         }
 
-        #map{
+        #map {
             width: 100%;
             height: 250px;
         }
-        #edit_map{
+
+        #edit_map {
             width: 100%;
             height: 250px;
         }
 
-        .pac-container { z-index: 100000; }
+        .pac-container {
+            z-index: 100000;
+        }
     </style>
 
-@if (get_setting('google_analytics') == 1)
+    @if (get_setting('google_analytics') == 1)
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ env('TRACKING_ID') }}"></script>
 
@@ -118,9 +145,9 @@
         gtag('js', new Date());
         gtag('config', '{{ env('TRACKING_ID') }}');
     </script>
-@endif
+    @endif
 
-@if (get_setting('facebook_pixel') == 1)
+    @if (get_setting('facebook_pixel') == 1)
     <!-- Facebook Pixel Code -->
     <script>
         !function(f,b,e,v,n,t,s)
@@ -135,16 +162,18 @@
         fbq('track', 'PageView');
     </script>
     <noscript>
-        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ env('FACEBOOK_PIXEL_ID') }}&ev=PageView&noscript=1"/>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id={{ env('FACEBOOK_PIXEL_ID') }}&ev=PageView&noscript=1" />
     </noscript>
     <!-- End Facebook Pixel Code -->
-@endif
+    @endif
 
-@php
+    @php
     echo get_setting('header_script');
-@endphp
+    @endphp
 
 </head>
+
 <body>
     <!-- aiz-main-wrapper -->
     <div class="aiz-main-wrapper d-flex flex-column">
@@ -159,58 +188,63 @@
     </div>
 
     @if (get_setting('show_cookies_agreement') == 'on')
-        <div class="aiz-cookie-alert shadow-xl">
-            <div class="p-3 bg-dark rounded">
-                <div class="text-white mb-3">
-                    @php
-                        echo get_setting('cookies_agreement_text');
-                    @endphp
-                </div>
-                <button class="btn btn-primary aiz-cookie-accept">
-                    {{ translate('Ok. I Understood') }}
-                </button>
+    <div class="aiz-cookie-alert shadow-xl">
+        <div class="p-3 bg-dark rounded">
+            <div class="text-white mb-3">
+                @php
+                echo get_setting('cookies_agreement_text');
+                @endphp
             </div>
+            <button class="btn btn-primary aiz-cookie-accept">
+                {{ translate('Ok. I Understood') }}
+            </button>
         </div>
+    </div>
     @endif
 
     @if (get_setting('show_website_popup') == 'on')
-        <div class="modal website-popup removable-session d-none" data-key="website-popup" data-value="removed">
-            <div class="absolute-full bg-black opacity-60"></div>
-            <div class="modal-dialog modal-dialog-centered modal-dialog-zoom modal-md">
-                <div class="modal-content position-relative border-0 rounded-0">
-                    <div class="aiz-editor-data">
-                        {!! get_setting('website_popup_content') !!}
-                    </div>
-                    @if (get_setting('show_subscribe_form') == 'on')
-                        <div class="pb-5 pt-4 px-5">
-                            <form class="" method="POST" action="{{ route('subscribers.store') }}">
-                                @csrf
-                                <div class="form-group mb-0">
-                                    <input type="email" class="form-control" placeholder="{{ translate('Your Email Address') }}" name="email" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-block mt-3">
-                                    {{ translate('Subscribe Now') }}
-                                </button>
-                            </form>
-                        </div>
-                    @endif
-                    <button class="absolute-top-right bg-white shadow-lg btn btn-circle btn-icon mr-n3 mt-n3 set-session" data-key="website-popup" data-value="removed" data-toggle="remove-parent" data-parent=".website-popup">
-                        <i class="la la-close fs-20"></i>
-                    </button>
+    <div class="modal website-popup removable-session d-none" data-key="website-popup" data-value="removed">
+        <div class="absolute-full bg-black opacity-60"></div>
+        <div class="modal-dialog modal-dialog-centered modal-dialog-zoom modal-md">
+            <div class="modal-content position-relative border-0 rounded-0">
+                <div class="aiz-editor-data">
+                    {!! get_setting('website_popup_content') !!}
                 </div>
+                @if (get_setting('show_subscribe_form') == 'on')
+                <div class="pb-5 pt-4 px-5">
+                    <form class="" method="POST" action="{{ route('subscribers.store') }}">
+                        @csrf
+                        <div class="form-group mb-0">
+                            <input type="email" class="form-control" placeholder="{{ translate('Your Email Address') }}"
+                                name="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">
+                            {{ translate('Subscribe Now') }}
+                        </button>
+                    </form>
+                </div>
+                @endif
+                <button class="absolute-top-right bg-white shadow-lg btn btn-circle btn-icon mr-n3 mt-n3 set-session"
+                    data-key="website-popup" data-value="removed" data-toggle="remove-parent"
+                    data-parent=".website-popup">
+                    <i class="la la-close fs-20"></i>
+                </button>
             </div>
         </div>
+    </div>
     @endif
 
     @include('frontend.partials.modal')
 
     <div class="modal fade" id="addToCart">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-zoom product-modal" id="modal-size" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-zoom product-modal" id="modal-size"
+            role="document">
             <div class="modal-content position-relative">
                 <div class="c-preloader text-center p-3">
                     <i class="las la-spinner la-spin la-3x"></i>
                 </div>
-                <button type="button" class="close absolute-top-right btn-icon close z-1" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close absolute-top-right btn-icon close z-1" data-dismiss="modal"
+                    aria-label="Close">
                     <span aria-hidden="true" class="la-2x">&times;</span>
                 </button>
                 <div id="addToCart-modal-body">
@@ -229,8 +263,8 @@
 
 
     @if (get_setting('facebook_chat') == 1)
-        <script type="text/javascript">
-            window.fbAsyncInit = function() {
+    <script type="text/javascript">
+        window.fbAsyncInit = function() {
                 FB.init({
                   xfbml            : true,
                   version          : 'v3.3'
@@ -244,13 +278,11 @@
               js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
               fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
-        </script>
-        <div id="fb-root"></div>
-        <!-- Your customer chat code -->
-        <div class="fb-customerchat"
-          attribution=setup_tool
-          page_id="{{ env('FACEBOOK_PAGE_ID') }}">
-        </div>
+    </script>
+    <div id="fb-root"></div>
+    <!-- Your customer chat code -->
+    <div class="fb-customerchat" attribution=setup_tool page_id="{{ env('FACEBOOK_PAGE_ID') }}">
+    </div>
     @endif
 
     <script>
@@ -260,7 +292,6 @@
     </script>
 
     <script>
-
         $(document).ready(function() {
             $('.category-nav-element').each(function(i, el) {
                 $(el).on('mouseover', function(){
@@ -487,7 +518,7 @@
                 AIZ.plugins.notify('warning', "{{ translate('Please Login as a customer to add products to the Cart.') }}");
                 return false;
             @endif
-            
+
             if(checkAddToCartValidity()) {
                 $('#addToCart-modal-body').html(null);
                 $('#addToCart').modal();
@@ -523,8 +554,21 @@
     @yield('script')
 
     @php
-        echo get_setting('footer_script');
+    echo get_setting('footer_script');
     @endphp
+    <script>
+        // Retrieve user location from local storage
+        var storedUserLocation = localStorage.getItem("userLocation");
 
+        // Check if there is stored user location data
+        if (storedUserLocation) {
+            // Parse the JSON string to get the JavaScript object
+            var userLocation = JSON.parse(storedUserLocation);
+
+        } else {
+            console.log("User location data not found in local storage");
+        }
+    </script>
 </body>
+
 </html>

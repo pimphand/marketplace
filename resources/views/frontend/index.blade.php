@@ -230,13 +230,13 @@ strtotime(date('Y-m-d H:i:s')) <= $flash_deal->end_date)
 
     </div>
 
-    {{-- featured jasa --}}
-    <div id="section_jasa">
+    {{-- Best Selling --}}
+    <div id="section_best_selling">
 
     </div>
 
-    {{-- Best Selling --}}
-    <div id="section_best_selling">
+    {{-- featured jasa --}}
+    <div id="section_jasa">
 
     </div>
 
@@ -512,5 +512,76 @@ strtotime(date('Y-m-d H:i:s')) <= $flash_deal->end_date)
                 AIZ.plugins.slickCarousel();
             });
         });
+
+        $(document).ready(function() {
+            // Check if Geolocation is supported by the browser
+            if ("geolocation" in navigator) {
+                // Check if location data is already in local storage
+                var storedLocation = localStorage.getItem("userLocation");
+
+                if (storedLocation) {
+                    // If location data is available in local storage, use it directly
+                    displayLocation(JSON.parse(storedLocation));
+                } else {
+                    // If not, request location using Geolocation API
+                    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+                }
+            } else {
+                $("#locationResult").text("Geolocation is not supported by your browser");
+            }
+
+            function successCallback(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                // Use OpenCage Geocoding API for reverse geocoding
+                var apiKey = '590b1bfc89b34d3c912129e3edc4d400';
+                var apiUrl = 'https://api.opencagedata.com/geocode/v1/json?key=' + apiKey + '&q=' + latitude + '+' + longitude;
+
+                $.getJSON(apiUrl, function(data) {
+                    if (data.results.length > 0) {
+                        var city = data.results[0].components.city || data.results[0].components.town;
+                        var province = data.results[0].components.state;
+                        console.log(province);
+
+                        // Save location data to local storage
+                        var userLocation = {
+                            city: city,
+                            province: province,
+                            latitude: latitude,
+                            longitude: longitude
+                        };
+                        localStorage.setItem("userLocation", JSON.stringify(userLocation));
+
+                        // Display the location
+                        displayLocation(userLocation);
+                    } else {
+                        $("#locationResult").text("Location information not available");
+                    }
+                });
+            }
+
+            function displayLocation(location) {
+                $("#locationResult").html("Your current location is:<br>City: " + location.city + "<br>Province: " + location.province + "<br>Latitude: " + location.latitude + "<br>Longitude: " + location.longitude);
+            }
+
+            function errorCallback(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        $("#locationResult").text("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        $("#locationResult").text("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        $("#locationResult").text("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        $("#locationResult").text("An unknown error occurred.");
+                        break;
+                }
+            }
+        });
+
     </script>
     @endsection

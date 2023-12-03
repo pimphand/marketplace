@@ -5,6 +5,7 @@ use App\Http\Controllers\AizUploadController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CarrierController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CompareController;
@@ -143,6 +144,10 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/privacy-policy', 'privacypolicy')->name('privacypolicy');
 
     Route::get('/track-your-order', 'trackOrder')->name('orders.track');
+
+    // service
+    Route::get('/service/{slug?}', 'service')->name('service');
+    Route::post('/service/{slug}', 'serviceApply')->name('service.apply');
 });
 
 // Language Switch
@@ -406,6 +411,9 @@ Route::post('/dopay/online', [AuthorizenetController::class, 'handleonlinepay'])
 
 //payku
 Route::get('/payku/callback/{id}', [PaykuController::class, 'callback'])->name('payku.result');
+
+//rajaongkir
+Route::get('/rajaongkir', [CarrierController::class, 'rajaOngkir'])->name('rajaongkir');
 
 //Blog Section
 Route::controller(BlogController::class)->group(function () {
