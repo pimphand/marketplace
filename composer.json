@@ -10,6 +10,7 @@
         "authorizenet/authorizenet": "^2.0",
         "barryvdh/laravel-ide-helper": "^2.10",
         "cinetpay/cinetpay-php": "^1.9",
+        "duitkupg/duitku-php": "dev-master",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^7.3",
         "instamojo/instamojo-php": "^0.4.0",

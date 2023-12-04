@@ -225,6 +225,7 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         ),
         'D' => 
         array (
+            'Duitku\\' => 7,
             'Dotenv\\' => 7,
             'Doctrine\\Persistence\\' => 21,
             'Doctrine\\Instantiator\\' => 22,
@@ -690,6 +691,10 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         'Egulias\\EmailValidator\\' => 
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/src',
+        ),
+        'Duitku\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/duitkupg/duitku-php/Duitku',
         ),
         'Dotenv\\' => 
         array (
@@ -1202,6 +1207,7 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         'App\\Models\\FlashDeal' => __DIR__ . '/../..' . '/app/Models/FlashDeal.php',
         'App\\Models\\FlashDealProduct' => __DIR__ . '/../..' . '/app/Models/FlashDealProduct.php',
         'App\\Models\\FlashDealTranslation' => __DIR__ . '/../..' . '/app/Models/FlashDealTranslation.php',
+        'App\\Models\\Installment' => __DIR__ . '/../..' . '/app/Models/Installment.php',
         'App\\Models\\Language' => __DIR__ . '/../..' . '/app/Models/Language.php',
         'App\\Models\\ManualPaymentMethod' => __DIR__ . '/../..' . '/app/Models/ManualPaymentMethod.php',
         'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',
@@ -2629,7 +2635,6 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         'Doctrine\\DBAL\\Driver\\IBMDB2\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Driver.php',
         'Doctrine\\DBAL\\Driver\\IBMDB2\\Exception\\CannotCopyStreamToStream' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Exception/CannotCopyStreamToStream.php',
         'Doctrine\\DBAL\\Driver\\IBMDB2\\Exception\\CannotCreateTemporaryFile' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Exception/CannotCreateTemporaryFile.php',
-        'Doctrine\\DBAL\\Driver\\IBMDB2\\Exception\\CannotWriteToTemporaryFile' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Exception/CannotWriteToTemporaryFile.php',
         'Doctrine\\DBAL\\Driver\\IBMDB2\\Exception\\ConnectionError' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Exception/ConnectionError.php',
         'Doctrine\\DBAL\\Driver\\IBMDB2\\Exception\\ConnectionFailed' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Exception/ConnectionFailed.php',
         'Doctrine\\DBAL\\Driver\\IBMDB2\\Exception\\Factory' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/IBMDB2/Exception/Factory.php',
@@ -2836,7 +2841,6 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         'Doctrine\\DBAL\\Schema\\Visitor\\Graphviz' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Visitor/Graphviz.php',
         'Doctrine\\DBAL\\Schema\\Visitor\\NamespaceVisitor' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Visitor/NamespaceVisitor.php',
         'Doctrine\\DBAL\\Schema\\Visitor\\RemoveNamespacedAssets' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Visitor/RemoveNamespacedAssets.php',
-        'Doctrine\\DBAL\\Schema\\Visitor\\SchemaDiffVisitor' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Visitor/SchemaDiffVisitor.php',
         'Doctrine\\DBAL\\Schema\\Visitor\\Visitor' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Visitor/Visitor.php',
         'Doctrine\\DBAL\\Statement' => __DIR__ . '/..' . '/doctrine/dbal/src/Statement.php',
         'Doctrine\\DBAL\\Tools\\Console\\Command\\ReservedWordsCommand' => __DIR__ . '/..' . '/doctrine/dbal/src/Tools/Console/Command/ReservedWordsCommand.php',
@@ -3005,6 +3009,11 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         'Dotenv\\Util\\Regex' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Util/Regex.php',
         'Dotenv\\Util\\Str' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Util/Str.php',
         'Dotenv\\Validator' => __DIR__ . '/..' . '/vlucas/phpdotenv/src/Validator.php',
+        'Duitku\\Api' => __DIR__ . '/..' . '/duitkupg/duitku-php/Duitku/Api.php',
+        'Duitku\\Config' => __DIR__ . '/..' . '/duitkupg/duitku-php/Duitku/Config.php',
+        'Duitku\\Pop' => __DIR__ . '/..' . '/duitkupg/duitku-php/Duitku/Pop.php',
+        'Duitku\\Request' => __DIR__ . '/..' . '/duitkupg/duitku-php/Duitku/Request.php',
+        'Duitku\\Sanitizer' => __DIR__ . '/..' . '/duitkupg/duitku-php/Duitku/Sanitizer.php',
         'Egulias\\EmailValidator\\EmailLexer' => __DIR__ . '/..' . '/egulias/email-validator/src/EmailLexer.php',
         'Egulias\\EmailValidator\\EmailParser' => __DIR__ . '/..' . '/egulias/email-validator/src/EmailParser.php',
         'Egulias\\EmailValidator\\EmailValidator' => __DIR__ . '/..' . '/egulias/email-validator/src/EmailValidator.php',
