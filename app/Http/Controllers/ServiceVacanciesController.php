@@ -51,6 +51,7 @@ class ServiceVacanciesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'payment_type' => 'required',
             'start_salary' => 'required|numeric',
             'end_salary' => 'required|numeric|gte:start_salary',
         ]);
@@ -68,6 +69,7 @@ class ServiceVacanciesController extends Controller
             "type" => $request->type,
             "start_salary" => $request->start_salary,
             "end_salary" => $request->end_salary,
+            "payment_type" => $request->payment_type,
             "province" => $request->province,
             "city" => $request->city,
             "end_date" => $request->end_date,
@@ -116,6 +118,7 @@ class ServiceVacanciesController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'payment_type' => 'required',
             'start_salary' => 'required|numeric',
             'end_salary' => 'required|numeric|gte:start_salary',
         ]);
@@ -127,6 +130,7 @@ class ServiceVacanciesController extends Controller
             $fileName = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path($path), $fileName);
         }
+
         $service->update([
             "title" => $request->title,
             "slug" => Str::slug($request->title),
@@ -135,6 +139,7 @@ class ServiceVacanciesController extends Controller
             "type" => $request->type,
             "start_salary" => $request->start_salary,
             "end_salary" => $request->end_salary,
+            "payment_type" => $request->payment_type,
             "province" => $request->province,
             "city" => $request->city,
             "end_date" => $request->end_date,

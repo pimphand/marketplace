@@ -13,6 +13,7 @@ use App\Models\Address;
 use App\Models\Carrier;
 use App\Models\CombinedOrder;
 use App\Models\Product;
+use App\Services\DuitkuService;
 use App\Utility\PayhereUtility;
 use App\Utility\NotificationUtility;
 use Session;
@@ -21,9 +22,11 @@ use Auth;
 class CheckoutController extends Controller
 {
 
+    protected $duitku;
+
     public function __construct()
     {
-        //
+        $this->duitku = new DuitkuService;
     }
 
     //check the selected payment gateway and redirect to that controller accordingly
@@ -51,8 +54,7 @@ class CheckoutController extends Controller
             $data['combined_order_id'] = $request->session()->get('combined_order_id');
             $request->session()->put('payment_data', $data);
 
-            if ($request->session()->get('combined_order_id') != null) {
-
+            if ($id = $request->session()->get('combined_order_id') != null) {
                 // If block for Online payment, wallet and cash on delivery. Else block for Offline payment
                 $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
                 if (class_exists($decorator)) {
@@ -61,7 +63,7 @@ class CheckoutController extends Controller
                     $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
                     $manual_payment_data = array(
                         'name'   => $request->payment_option,
-                        'amount' => $combined_order->grand_total,
+                        'amount' => $combined_order->grand_total + (int)$request->fee_payment,
                         'trx_id' => $request->trx_id,
                         'photo'  => $request->photo
                     );
@@ -71,6 +73,8 @@ class CheckoutController extends Controller
                         $order->save();
                     }
                     flash(translate('Your order has been placed successfully. Please submit payment information from purchase history'))->success();
+
+
                     return redirect()->route('order_confirmed');
                 }
             }
@@ -122,7 +126,7 @@ class CheckoutController extends Controller
             return redirect()->route('home');
         }
 
-        $weight = 0;
+        $weight = 1;
         foreach ($carts as $key => $cartItem) {
             $cartItem->address_id = $request->address_id;
             $cartItem->save();
@@ -382,6 +386,22 @@ class CheckoutController extends Controller
             echo "cURL Error #:" . $err;
         } else {
             return $data->rajaongkir;
+        }
+    }
+
+    public function checkDuitku(Request $request)
+    {
+        $carts = Cart::where('user_id', Auth::user()->id)->get();
+        $total = 0;
+        foreach ($carts as $key => $cart) {
+            $total += ($cart->price + $cart->quantity) + $cart->shipping_cost;
+        }
+
+        $data = $this->duitku->getPaymentMethod((int)$total);
+        if ($data['responseMessage'] == "SUCCESS") {
+            $cart = true;
+            return view('frontend.payment.duitku', compact('data', 'cart'));
+        } else {
         }
     }
 }

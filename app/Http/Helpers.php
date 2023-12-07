@@ -202,20 +202,20 @@ if (!function_exists('format_price')) {
     function format_price($price, $isMinimize = false)
     {
         if (get_setting('decimal_separator') == 1) {
-            $fomated_price = number_format($price, get_setting('no_of_decimals'));
+            $fomated_price = number_format($price);
         } else {
-            $fomated_price = number_format($price, get_setting('no_of_decimals'), ',', '.');
+            $fomated_price = number_format($price, ',', '.');
         }
 
 
         // Minimize the price
         if ($isMinimize) {
-            $temp = number_format($price / 1000000000, get_setting('no_of_decimals'), ".", "");
+            $temp = number_format($price / 1000000000, ".", "");
 
             if ($temp >= 1) {
                 $fomated_price = $temp . "B";
             } else {
-                $temp = number_format($price / 1000000, get_setting('no_of_decimals'), ".", "");
+                $temp = number_format($price / 1000000, ".", "");
                 if ($temp >= 1) {
                     $fomated_price = $temp . "M";
                 }
@@ -223,7 +223,7 @@ if (!function_exists('format_price')) {
         }
 
         if (get_setting('symbol_format') == 1) {
-            return currency_symbol() . $fomated_price;
+            return currency_symbol() . '. ' . $fomated_price;
         } else if (get_setting('symbol_format') == 3) {
             return currency_symbol() . ' ' . $fomated_price;
         } else if (get_setting('symbol_format') == 4) {

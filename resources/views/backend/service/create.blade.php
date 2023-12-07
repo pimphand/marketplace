@@ -54,11 +54,19 @@
 
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">{{translate('Rentang Gaji')}}</label>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <input type="number" value="0" name="start_salary" class="form-control" required>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <input type="number" value="0" name="end_salary" class="form-control" required>
+                        </div>
+                        <div class="col-md-3">
+                            <select type="number" name="payment_type" class="form-control" required>
+                                <option value="Hari">Hari</option>
+                                <option value="Minggu">Minggu</option>
+                                <option value="Bulan">Bulan</option>
+                                <option value="Tahun">Tahunan</option>
+                            </select>
                         </div>
                     </div>
 

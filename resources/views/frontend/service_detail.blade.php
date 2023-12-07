@@ -58,7 +58,7 @@
                                 <div class="product-price">
                                     <strong id="chosen_price" class="h4 fw-600 text-primary">
                                         Rp. {{ number_format($service->start_salary,2) }} - Rp. {{
-                                        number_format($service->end_salary,2) }}
+                                        number_format($service->end_salary,2) }} / {{ $service->payment_type }}
                                     </strong>
                                 </div>
                             </div>
@@ -100,6 +100,7 @@
                                     $selisih = $endDate->diff($sekarang);
                                     @endphp
                                     @if ($endDate->isPast())
+
                                     <span class="text-danger">Sudah berakhir</span>
                                     @else
                                     <span>
@@ -114,10 +115,17 @@
                         <div class="d-table width-100 mt-3">
                             <div class="d-table-cell">
                                 @auth
+                                @if ($endDate->isPast())
+
+                                @else
                                 <button type="button" class="btn btn-success" id="daftar">
                                     Daftar
                                 </button>
+                                @endif
+
                                 @endauth
+
+
                             </div>
                         </div>
 

@@ -644,8 +644,8 @@ class HomeController extends Controller
     public function serviceApply(Request $request, $slug)
     {
         $request->validate([
-            'resume' => 'required|mimes:pdf,jpg,doc|max:2048',
-            'letter' => 'nullable|mimes:pdf,jpg,doc|max:2048',
+            'resume' => 'required|mimes:pdf,jpg,png|max:2048',
+            'letter' => 'nullable|mimes:pdf,jpg,png|max:2048',
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required',

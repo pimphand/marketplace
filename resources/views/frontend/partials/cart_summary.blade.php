@@ -131,6 +131,13 @@
                     </td>
                 </tr>
 
+                <tr class="cart-shipping" id="cart-fee-payment">
+                    <th>{{ translate('Fee Payment') }}</th>
+                    <td class="text-right">
+                        <span class="font-italic" id="cart-fee"></span>
+                    </td>
+                </tr>
+
                 @if (Session::has('club_point'))
                 <tr class="cart-shipping">
                     <th>{{ translate('Redeem point') }}</th>

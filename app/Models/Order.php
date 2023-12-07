@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    protected $guarded = [];
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class);
@@ -39,6 +41,11 @@ class Order extends Model
     public function affiliate_log()
     {
         return $this->hasMany(AffiliateLog::class);
+    }
+
+    public function duitku_payment()
+    {
+        return $this->hasMany(DuitkuPayment::class, 'order_id', 'id');
     }
 
     public function club_point()

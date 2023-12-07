@@ -50,6 +50,8 @@
                     id="checkout-form">
                     @csrf
                     <input type="hidden" name="owner_id" value="{{ $carts[0]['owner_id'] }}">
+                    <input type="hidden" name="payment_method" id="payment_method">
+                    <input type="hidden" name="fee_payment" id="fee_payment">
 
                     <div class="card rounded border-0 shadow-sm">
                         <div class="card-header p-3">
@@ -86,6 +88,22 @@
                                             </label>
                                         </div>
 
+                                        {{-- @if (get_setting('duitku_payment') == 1) --}}
+                                        <div class="col-6 col-md-4">
+                                            <label class="aiz-megabox d-block mb-3">
+                                                <input value="duitku" class="online_payment" type="radio"
+                                                    name="payment_option">
+                                                <span class="d-block aiz-megabox-elem p-3">
+                                                    <img src="{{ static_asset('assets/img/cards/duitku.png') }}"
+                                                        class="img-fluid mb-2">
+                                                    <span class="d-block text-center">
+                                                        <span class="d-block fw-600 fs-15">{{ translate('duitku')
+                                                            }}</span>
+                                                    </span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        {{-- @endif --}}
                                         @if (get_setting('paypal_payment') == 1)
                                         <div class="col-6 col-md-4">
                                             <label class="aiz-megabox d-block mb-3">
@@ -591,8 +609,13 @@
                             </a>
                         </div>
                         <div class="col-6 text-right">
-                            <button type="button" onclick="submitOrder(this)" class="btn btn-primary fw-600">{{
-                                translate('Complete Order') }}</button>
+                            <button type="button" class="btn btn-success fw-600" id="btn-submit"
+                                onclick="submitOrder(this)">
+                                {{translate('Complete Order')}}
+                            </button>
+                            <button type="button" class="btn btn-success fw-600" id="btn-duitku" style="display: none">
+                                {{translate('Complete Order')}}
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -600,6 +623,16 @@
 
             <div class="col-lg-4 mt-lg-0 mt-4" id="cart_summary">
                 @include('frontend.partials.cart_summary')
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="payment_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div id="payment_modal_body">
+
+                </div>
             </div>
         </div>
     </div>
@@ -777,13 +810,59 @@
     }
 
     // document.querySelector('').value;
-   $(document).on("click", ".online_payment", function() {
+    $(document).on("click", "#btn-duitku", function() {
+        $.post('{{ route('checkout.checkDuitku') }}', {
+            _token: '{{ csrf_token() }}',
+        }, function(data) {
+            $('#payment_modal_body').html(data);
+            $('#payment_modal').modal('show');
+        });
+    });
+
+    $(document).on("click", ".online_payment", function() {
 
         if ($(this).val() == 'cicil') {
-            cicil()
-        } else {
+            cicil();
+            $('#btn-submit').show();
+            $('#btn-duitku').hide();
+        } else if($(this).val() == "duitku"){
+            $('#btn-submit').hide();
+            $('#btn-duitku').show();
+            $('.form-cicil').hide()
+        }else {
+            $('#btn-submit').show();
+            $('#btn-duitku').hide();
             $('.form-cicil').hide()
         }
     });
+
+    function paymentMethod(paymentMethod, fee) {
+        // Format fee as Rp.40.000,00
+        var total = $('#_total').data('total');
+        var formattedFee = parseFloat(fee).toLocaleString('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        $('#cart-fee').text(formattedFee)
+        var grandTotal = total + parseFloat(fee);
+        var formattedGrandTotal = parseFloat(grandTotal).toLocaleString('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        $('#_total').text(formattedGrandTotal);
+
+        $('#payment_modal_body').on('click', '#_button-duitku', function (e) {
+            $('#btn-submit').show();
+            $('#btn-duitku').hide();
+            $("#payment_method").val(paymentMethod)
+            $("#fee_payment").val(fee)
+            $('#payment_modal').modal('hide');
+        });
+    }
+
 </script>
 @endsection

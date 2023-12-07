@@ -18,15 +18,19 @@ use App\Models\SmsTemplate;
 use Auth;
 use Mail;
 use App\Mail\InvoiceEmailManager;
+use App\Services\DuitkuService;
 use App\Utility\NotificationUtility;
 use CoreComponentRepository;
 use App\Utility\SmsUtility;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Mpdf\Tag\Tr;
 
 class OrderController extends Controller
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         // Staff Permission Check
         $this->middleware(['permission:view_all_orders'])->only('all_orders');
         $this->middleware(['permission:view_inhouse_orders'])->only('all_orders');
@@ -35,30 +39,30 @@ class OrderController extends Controller
         $this->middleware(['permission:view_order_details'])->only('show');
         $this->middleware(['permission:delete_order'])->only('destroy');
     }
-    
+
     // All Orders
     public function all_orders(Request $request)
     {
         CoreComponentRepository::instantiateShopRepository();
-        
+
         $date = $request->date;
         $sort_search = null;
         $delivery_status = null;
         $payment_status = '';
-        
+
         $orders = Order::orderBy('id', 'desc');
         $admin_user_id = User::where('user_type', 'admin')->first()->id;
-        if(Route::currentRouteName() == 'inhouse_orders.index') {
+        if (Route::currentRouteName() == 'inhouse_orders.index') {
             $orders = $orders->where('orders.seller_id', '=', $admin_user_id);
         }
-        if(Route::currentRouteName() == 'seller_orders.index') {
+        if (Route::currentRouteName() == 'seller_orders.index') {
             $orders = $orders->where('orders.seller_id', '!=', $admin_user_id);
         }
-        if(Route::currentRouteName() == 'pick_up_point.index') {
+        if (Route::currentRouteName() == 'pick_up_point.index') {
             $orders->where('shipping_type', 'pickup_point')->orderBy('code', 'desc');
             if (Auth::user()->user_type == 'staff' && Auth::user()->staff->pick_up_point != null) {
                 $orders->where('shipping_type', 'pickup_point')
-                        ->where('pickup_point_id', Auth::user()->staff->pick_up_point->id);
+                    ->where('pickup_point_id', Auth::user()->staff->pick_up_point->id);
             }
         }
         if ($request->search) {
@@ -74,8 +78,8 @@ class OrderController extends Controller
             $delivery_status = $request->delivery_status;
         }
         if ($date != null) {
-            $orders = $orders->where('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])).'  00:00:00')
-            ->where('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])).'  23:59:59');
+            $orders = $orders->where('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])) . '  00:00:00')
+                ->where('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])) . '  23:59:59');
         }
         $orders = $orders->paginate(15);
         return view('backend.sales.index', compact('orders', 'sort_search', 'payment_status', 'delivery_status', 'date'));
@@ -143,10 +147,10 @@ class OrderController extends Controller
         $combined_order->save();
 
         $seller_products = array();
-        foreach ($carts as $cartItem){
+        foreach ($carts as $cartItem) {
             $product_ids = array();
             $product = Product::find($cartItem['product_id']);
-            if(isset($seller_products[$product->user_id])){
+            if (isset($seller_products[$product->user_id])) {
                 $product_ids = $seller_products[$product->user_id];
             }
             array_push($product_ids, $cartItem);
@@ -160,7 +164,7 @@ class OrderController extends Controller
             $order->shipping_address = $combined_order->shipping_address;
 
             $order->additional_info = $request->additional_info;
-            
+
             //======== Closed By Kiron ==========
             // $order->shipping_type = $carts[0]['shipping_type'];
             // if ($carts[0]['shipping_type'] == 'pickup_point') {
@@ -171,6 +175,7 @@ class OrderController extends Controller
             // }
 
             $order->payment_type = $request->payment_option;
+            $order->fee_payment = $request->fee_payment;
             $order->delivery_viewed = '0';
             $order->payment_status_viewed = '0';
             $order->code = date('Ymd-His') . rand(10, 99);
@@ -187,7 +192,7 @@ class OrderController extends Controller
                 $product = Product::find($cartItem['product_id']);
 
                 $subtotal += cart_product_price($cartItem, $product, false, false) * $cartItem['quantity'];
-                $tax +=  cart_product_tax($cartItem, $product,false) * $cartItem['quantity'];
+                $tax +=  cart_product_tax($cartItem, $product, false) * $cartItem['quantity'];
                 $coupon_discount += $cartItem['discount'];
 
                 $product_variation = $cartItem['variation'];
@@ -208,7 +213,7 @@ class OrderController extends Controller
                 $order_detail->product_id = $product->id;
                 $order_detail->variation = $product_variation;
                 $order_detail->price = cart_product_price($cartItem, $product, false, false) * $cartItem['quantity'];
-                $order_detail->tax = cart_product_tax($cartItem, $product,false) * $cartItem['quantity'];
+                $order_detail->tax = cart_product_tax($cartItem, $product, false) * $cartItem['quantity'];
                 $order_detail->shipping_type = $cartItem['shipping_type'];
                 $order_detail->product_referral_code = $cartItem['product_referral_code'];
                 $order_detail->shipping_cost = $cartItem['shipping_cost'];
@@ -232,7 +237,7 @@ class OrderController extends Controller
                     $order->carrier_id = $cartItem['carrier_id'];
                 }
 
-                if ($product->added_by == 'seller' && $product->user->seller != null){
+                if ($product->added_by == 'seller' && $product->user->seller != null) {
                     $seller = $product->user->seller;
                     $seller->num_of_sale += $cartItem['quantity'];
                     $seller->save();
@@ -263,6 +268,25 @@ class OrderController extends Controller
             $combined_order->grand_total += $order->grand_total;
 
             $order->save();
+
+            if ($order->payment_type = "duitku") {
+                try {
+                    $duitku = new DuitkuService;
+                    $respone = $duitku->inquiry($order);
+
+                    $order->duitku_payment()->create([
+                        'fee' => $order->fee_payment,
+                        'paymentUrl' => $respone['paymentUrl'],
+                        'reference' => $respone['reference'],
+                        'vaNumber' => isset($respone['vaNumber']) ? $respone['vaNumber'] : null,
+                        'qrString' => isset($respone['qrString']) ? $respone['qrString'] : null,
+                        'amount' => $respone['amount'],
+                    ]);
+                } catch (\Throwable $th) {
+                    Log::alert("Error duitku " . json_encode($th->getMessage()));
+                    continue;
+                }
+            }
         }
 
         $combined_order->save();
@@ -319,9 +343,7 @@ class OrderController extends Controller
                         $product_stock->qty += $orderDetail->quantity;
                         $product_stock->save();
                     }
-
                 } catch (\Exception $e) {
-
                 }
 
                 $orderDetail->delete();
@@ -410,7 +432,8 @@ class OrderController extends Controller
 
                 if (addon_is_activated('affiliate_system')) {
                     if (($request->status == 'delivered' || $request->status == 'cancelled') &&
-                        $orderDetail->product_referral_code) {
+                        $orderDetail->product_referral_code
+                    ) {
 
                         $no_of_delivered = 0;
                         $no_of_canceled = 0;
@@ -434,7 +457,6 @@ class OrderController extends Controller
             try {
                 SmsUtility::delivery_status_change(json_decode($order->shipping_address)->phone, $order);
             } catch (\Exception $e) {
-
             }
         }
 
@@ -464,13 +486,14 @@ class OrderController extends Controller
         return 1;
     }
 
-   public function update_tracking_code(Request $request) {
+    public function update_tracking_code(Request $request)
+    {
         $order = Order::findOrFail($request->order_id);
         $order->tracking_code = $request->tracking_code;
         $order->save();
 
         return 1;
-   }
+    }
 
     public function update_payment_status(Request $request)
     {
@@ -524,7 +547,6 @@ class OrderController extends Controller
             try {
                 SmsUtility::payment_status_change(json_decode($order->shipping_address)->phone, $order);
             } catch (\Exception $e) {
-
             }
         }
         return 1;
@@ -563,7 +585,6 @@ class OrderController extends Controller
                 try {
                     Mail::to($order->delivery_boy->email)->queue(new InvoiceEmailManager($array));
                 } catch (\Exception $e) {
-
                 }
             }
 
@@ -571,7 +592,6 @@ class OrderController extends Controller
                 try {
                     SmsUtility::assign_delivery_boy($order->delivery_boy->phone, $order->code);
                 } catch (\Exception $e) {
-
                 }
             }
         }

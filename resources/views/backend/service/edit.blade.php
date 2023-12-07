@@ -38,7 +38,7 @@
                         <label class="col-md-3 col-form-label">{{translate('Logo Perusahaan')}}</label>
                         <div class="col-md-9">
                             <input type="file" placeholder="{{translate('Logo Perusahaan')}}" id="logo" name="logo"
-                                class="form-control" required>
+                                class="form-control">
                         </div>
                     </div>
 
@@ -58,13 +58,22 @@
 
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">{{translate('Rentang Gaji')}}</label>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <input type="number" name="start_salary" value="{{ $data->start_salary }}"
                                 class="form-control" required>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <input type="number" name="end_salary" value="{{ $data->end_salary }}" class="form-control"
                                 required>
+                        </div>
+                        <div class="col-md-3">
+                            <select type="number" name="payment_type" value="{{ $data->payment_type }}"
+                                class="form-control" required>
+                                <option value="Hari">Hari</option>
+                                <option value="Minggu">Minggu</option>
+                                <option value="Bulan">Bulan</option>
+                                <option value="Tahun">Tahunan</option>
+                            </select>
                         </div>
                     </div>
 
