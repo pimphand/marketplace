@@ -305,9 +305,9 @@
                     _token: '{{ csrf_token() }}',
                     order_id: order_ids,
                     feePayment:feePayment,
-                    paymentMethod:paymentMethods,
+                    payment_method:paymentMethods,
                 }, function(data) {
-                    console.log(data);;
+                    window.location.href = data.paymentUrl;
                 });
             });
         } else {

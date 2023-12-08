@@ -159,7 +159,6 @@ class DuitkuService
 
         if ($httpCode == 200) {
             $result = json_decode($request, true);
-
             return [
                 'paymentUrl' => $result['paymentUrl'],
                 'merchantCode' => $result['merchantCode'],

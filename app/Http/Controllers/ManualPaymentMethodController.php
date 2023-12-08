@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Services\DuitkuService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ManualPaymentMethodController extends Controller
 {
@@ -35,7 +36,17 @@ class ManualPaymentMethodController extends Controller
             'orderDetails',
             'user:name,email,phone,id'
         ])->find($request->order_id);
+        $order->duitku_payment()->delete();
 
-        return $this->duitku->inquiry($order);
+        $respone = $this->duitku->inquiry($order);
+        $order->duitku_payment()->create([
+            'fee' => $order->fee_payment,
+            'paymentUrl' => $respone['paymentUrl'],
+            'reference' => $respone['reference'],
+            'vaNumber' => isset($respone['vaNumber']) ? $respone['vaNumber'] : null,
+            'qrString' => isset($respone['qrString']) ? $respone['qrString'] : null,
+            'amount' => $respone['amount'],
+        ]);
+        return $respone;
     }
 }
