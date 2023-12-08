@@ -9,8 +9,8 @@
     </div>
     <div class="p-md-3 p-2 text-left">
         <div class="fs-15">
-            <span class="fw-700 text-primary">Rp. {{ number_format($service->start_salary,2) }} - Rp. {{
-                number_format($service->end_salary,2) }} / {{ $service->payment_type }}</span>
+            <span class="fw-700 text-primary">Rp. {{ number_format($service->start_salary) }} - Rp. {{
+                number_format($service->end_salary) }} / {{ $service->payment_type }}</span>
         </div>
         <div class="rating rating-sm mt-1">
             {{ $service->location }}

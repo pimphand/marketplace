@@ -54,10 +54,7 @@ class HomeController extends Controller
             return Category::where('featured', 1)->whereTop(1)->get();
         });
 
-
-        $top10_brands = Brand::whereTop(1)->get();
-
-        return view('frontend.index', compact('featured_categories', 'todays_deal_products', 'newest_products', 'top10_categories', 'top10_brands'));
+        return view('frontend.index', compact('featured_categories', 'todays_deal_products', 'newest_products', 'top10_categories'));
     }
 
     public function login()
@@ -223,6 +220,11 @@ class HomeController extends Controller
     public function load_list_service_section()
     {
         return view('frontend.partials.list_service_section');
+    }
+
+    public function load_list_brand_section()
+    {
+        return view('frontend.partials.list_brand_section');
     }
 
     public function trackOrder(Request $request)

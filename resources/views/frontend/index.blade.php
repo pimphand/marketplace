@@ -385,6 +385,9 @@ strtotime(date('Y-m-d H:i:s')) <= $flash_deal->end_date)
 
     {{-- Top 10 categories and Brands --}}
 
+    <div id="section_best_brand">
+
+    </div>
 
     <section class="mb-4">
         <div class="container">
@@ -446,33 +449,7 @@ strtotime(date('Y-m-d H:i:s')) <= $flash_deal->end_date)
                 </div>
                 <div class="row gutters-5">
 
-                    @php
-                    $totalBrands = count($top10_brands);
-                    $dummyCount = max(10 - $totalBrands, 0);
-                    @endphp
 
-                    @foreach ($top10_brands as $brand)
-                    <div class="col-sm-6">
-                        <a href="{{ route('products.brand', $brand->slug) }}"
-                            class="bg-white border d-block text-reset rounded p-2 hov-shadow-md mb-2">
-                            <div class="row align-items-center no-gutters">
-                                <div class="col-4 text-center">
-                                    <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                                        data-src="{{ uploaded_asset($brand->logo) }}"
-                                        alt="{{ $brand->getTranslation('name') }}" class="img-fluid img lazyload h-60px"
-                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
-                                </div>
-                                <div class="col-6">
-                                    <div class="text-truncate-2 pl-3 fs-14 fw-600 text-left">{{
-                                        $brand->getTranslation('name') }}</div>
-                                </div>
-                                <div class="col-2 text-center">
-                                    <i class="la la-angle-right text-primary"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @endforeach
 
 
                 </div>
@@ -509,6 +486,10 @@ strtotime(date('Y-m-d H:i:s')) <= $flash_deal->end_date)
             });
             $.post('{{ route('home.section.list_service') }}', {_token:'{{ csrf_token() }}'}, function(data){
                 $('#section_jasa').html(data);
+                AIZ.plugins.slickCarousel();
+            });
+            $.post('{{ route('home.section.list_brand') }}', {_token:'{{ csrf_token() }}'}, function(data){
+                $('#section_best_brand').html(data);
                 AIZ.plugins.slickCarousel();
             });
         });
