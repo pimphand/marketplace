@@ -385,113 +385,35 @@ strtotime(date('Y-m-d H:i:s')) <= $flash_deal->end_date)
 
     {{-- Top 10 categories and Brands --}}
 
+    <div id="section_rental">
+
+    </div>
+
     <div id="section_best_brand">
 
     </div>
 
-    <section class="mb-4">
-        <div class="container">
-            <div class="row gutters-10">
-
-                <div class="col-lg-6">
-                    <div class="d-flex mb-3 align-items-baseline border-bottom">
-                        <h3 class="h5 fw-700 mb-0">
-                            <span class="border-bottom border-primary border-width-2 pb-3 d-inline-block">{{
-                                translate('Top 10 Categories') }}</span>
-                        </h3>
-                        <a href="{{ route('categories.all') }}" class="ml-auto mr-0 btn btn-primary btn-sm shadow-md">{{
-                            translate('View All Categories') }}</a>
-                    </div>
-                    <div class="row gutters-5">
-
-                        @php
-                        $totalCategories = count($top10_categories);
-                        $displayedCategories = min($totalCategories, 10);
-                        @endphp
-
-                        @for ($i = 0; $i < $displayedCategories; $i++) @php $category=$top10_categories[$i]; @endphp
-                            <div class="col-sm-6">
-                            <a href="{{ route('products.category', $category->slug) }}"
-                                class="bg-white border d-block text-reset rounded p-2 hov-shadow-md mb-2">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col-3 text-center">
-                                        <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                                            data-src="{{ uploaded_asset($category->banner) }}"
-                                            alt="{{ $category->getTranslation('name') }}"
-                                            class="img-fluid img lazyload h-60px"
-                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
-                                    </div>
-                                    <div class="col-7">
-                                        <div class="text-truncate-2 pl-3 fs-14 fw-600 text-left">{{
-                                            $category->getTranslation('name') }}</div>
-                                    </div>
-                                    <div class="col-2 text-center">
-                                        <i class="la la-angle-right text-primary"></i>
-                                    </div>
-                                </div>
-                            </a>
-                    </div>
-                    @endfor
-
-
-
-                </div>
-            </div>
-
-            <div class="col-lg-6">
-                <div class="d-flex mb-3 align-items-baseline border-bottom">
-                    <h3 class="h5 fw-700 mb-0">
-                        <span class="border-bottom border-primary border-width-2 pb-3 d-inline-block">{{ translate('Top
-                            10 Brands') }}</span>
-                    </h3>
-                    <a href="{{ route('brands.all') }}" class="ml-auto mr-0 btn btn-primary btn-sm shadow-md">{{
-                        translate('View All Brands') }}</a>
-                </div>
-                <div class="row gutters-5">
-
-
-
-
-                </div>
-            </div>
-
-        </div>
-        </div>
-    </section>
 
     @endsection
 
     @section('script')
     <script>
         $(document).ready(function(){
-            $.post('{{ route('home.section.featured') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#section_featured').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-            $.post('{{ route('home.section.best_selling') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#section_best_selling').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-            $.post('{{ route('home.section.auction_products') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#auction_products').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-            $.post('{{ route('home.section.home_categories') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#section_home_categories').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-            $.post('{{ route('home.section.best_sellers') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#section_best_sellers').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-            $.post('{{ route('home.section.list_service') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#section_jasa').html(data);
-                AIZ.plugins.slickCarousel();
-            });
-            $.post('{{ route('home.section.list_brand') }}', {_token:'{{ csrf_token() }}'}, function(data){
-                $('#section_best_brand').html(data);
-                AIZ.plugins.slickCarousel();
-            });
+            function loadDataAndApplySection(route, targetElement) {
+                $.post(route, { _token: '{{ csrf_token() }}' }, function(data) {
+                    $(targetElement).html(data);
+                    AIZ.plugins.slickCarousel();
+                });
+            }
+
+            loadDataAndApplySection('{{ route('home.section.featured') }}', '#section_featured');
+            loadDataAndApplySection('{{ route('home.section.best_selling') }}', '#section_best_selling');
+            loadDataAndApplySection('{{ route('home.section.auction_products') }}', '#auction_products');
+            loadDataAndApplySection('{{ route('home.section.home_categories') }}', '#section_home_categories');
+            loadDataAndApplySection('{{ route('home.section.best_sellers') }}', '#section_best_sellers');
+            loadDataAndApplySection('{{ route('home.section.list_service') }}', '#section_jasa');
+            loadDataAndApplySection('{{ route('home.section.list_brand') }}', '#section_best_brand');
+            loadDataAndApplySection('{{ route('home.section.list_rental') }}', '#section_rental');
         });
 
         $(document).ready(function() {

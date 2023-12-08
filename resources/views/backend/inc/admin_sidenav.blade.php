@@ -173,6 +173,14 @@
                                 <span class="aiz-side-nav-text">{{translate('Jasa & Lowongan Kerja')}}</span>
                             </a>
                         </li>
+                        {{-- @can('view_auction_product_orders') --}}
+                        <li class="aiz-side-nav-item">
+                            <a href="{{route('rental-products.index')}}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['rental-products.index.index']) }}">
+                                <span class="aiz-side-nav-text">{{ translate('Rental Product') }}</span>
+                            </a>
+                        </li>
+                        {{-- @endcan --}}
                         {{-- @endcan --}}
                     </ul>
                 </li>

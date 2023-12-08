@@ -595,13 +595,7 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <label class="col-md-6 col-from-label">{{translate('Sewa')}}</label>
-                            <div class="col-md-6">
-                                <label class="aiz-switch aiz-switch-success mb-0">
-                                    <input type="checkbox" name="rental" value="1" @if($product->rental == 1) checked @endif>
-                                    <span></span>
-                                </label>
+
                             </div>
                         </div>
                     </div>

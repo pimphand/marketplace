@@ -194,6 +194,11 @@ class HomeController extends Controller
         return view('frontend.partials.featured_products_section');
     }
 
+    public function load_list_rental()
+    {
+        return view('frontend.partials.rental_products_section');
+    }
+
     public function load_best_selling_section()
     {
         return view('frontend.partials.best_selling_section');
