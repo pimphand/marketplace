@@ -393,6 +393,8 @@ return array(
     'App\\Models\\RajaOngkir\\City' => $baseDir . '/app/Models/RajaOngkir/City.php',
     'App\\Models\\RajaOngkir\\Province' => $baseDir . '/app/Models/RajaOngkir/Province.php',
     'App\\Models\\RefundRequest' => $baseDir . '/app/Models/RefundRequest.php',
+    'App\\Models\\RentalOrder' => $baseDir . '/app/Models/RentalOrder.php',
+    'App\\Models\\RentalOrderDetail' => $baseDir . '/app/Models/RentalOrderDetail.php',
     'App\\Models\\RentalProduct' => $baseDir . '/app/Models/RentalProduct.php',
     'App\\Models\\Review' => $baseDir . '/app/Models/Review.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',

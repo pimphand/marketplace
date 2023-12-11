@@ -243,27 +243,27 @@
                 </form>
                 <div class="mt-3">
                     @if ($product->digital == 1)
-                        <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart" onclick="addToCart()">
+                        <button type="button" class="btn btn-success buy-now fw-600 add-to-cart" onclick="addToCart()">
                             <i class="la la-shopping-cart"></i>
                             <span class="d-none d-md-inline-block">{{ translate('Add to cart')}}</span>
                         </button>
                     @elseif($product->rental == 1 && $qty > 0)
                     @if (Auth::user() && Auth::user()->identity_card == null)
                     <a href="{{ route('profile') }}">
-                        <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart">
+                        <button type="button" class="btn btn-success buy-now fw-600 add-to-cart">
                             <i class="la la-shopping-cart"></i>
                             <span class="d-none d-md-inline-block"></span>
                         </button>
                     </a>
                     @else
                     @auth
-                    <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart" onclick="addToCart()">
+                    <button type="button" class="btn btn-success buy-now fw-600 add-to-cart" onclick="ajukanSewa()">
                         <i class="la la-shopping-cart"></i>
-                        <span class="d-none d-md-inline-block">{{ translate('Add to cart')}}</span>
+                        <span class="d-none d-md-inline-block">{{ translate('Ajukan Sewa')}}</span>
                     </button>
                     @else
                     <a href="{{ route('profile') }}">
-                        <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart">
+                        <button type="button" class="btn btn-success buy-now fw-600 add-to-cart">
                             <span class="d-none d-md-inline-block">Anda harus login dulu</span>
                         </button>
                     </a>
@@ -276,7 +276,7 @@
                                 <span class="d-none d-md-inline-block">{{ translate($product->external_link_btn)}}</span>
                             </a>
                         @else
-                            <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart" onclick="addToCart()">
+                            <button type="button" class="btn btn-success buy-now fw-600 add-to-cart" onclick="addToCart()">
                                 <i class="la la-shopping-cart"></i>
                                 <span class="d-none d-md-inline-block">{{ translate('Add to cart')}}</span>
                             </button>

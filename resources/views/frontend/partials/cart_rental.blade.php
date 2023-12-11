@@ -1,11 +1,11 @@
 @php
 if (auth()->user() != null) {
     $user_id = Auth::user()->id;
-    $cart = \App\Models\Cart::where('user_id', $user_id)->get();
+    $cart = \App\Models\Cart::where('rental',1)->where('user_id', $user_id)->get();
 } else {
     $temp_user_id = Session()->get('temp_user_id');
     if ($temp_user_id) {
-        $cart = \App\Models\Cart::where('temp_user_id', $temp_user_id)->get();
+        $cart = \App\Models\Cart::where('rental',1)->where('temp_user_id', $temp_user_id)->get();
     }
 }
 
@@ -21,7 +21,7 @@ if (auth()->user() != null) {
         @else
             <span class="badge badge-primary badge-inline badge-pill cart-count">0</span>
         @endif
-        <span class="nav-box-text d-none d-xl-block opacity-70">{{ translate('Cart') }}</span>
+        <span class="nav-box-text d-none d-xl-block opacity-70">{{ translate('Rental Cart') }}</span>
     </span>
 </a>
 <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg p-0 stop-propagation">
@@ -41,7 +41,6 @@ if (auth()->user() != null) {
                     $total = $total + cart_product_price($cartItem, $product, false) * $cartItem['quantity'];
                 @endphp
                 @if ($product != null)
-                   @if ($product->rental == 1)
                     <li class="list-group-item">
                         <span class="d-flex align-items-center">
                             <a href="{{ route('product', $product->slug) }}"
@@ -68,34 +67,6 @@ if (auth()->user() != null) {
                             </span>
                         </span>
                     </li>
-                   @else
-                   <li class="list-group-item">
-                    <span class="d-flex align-items-center">
-                        <a href="{{ route('product', $product->slug) }}"
-                            class="text-reset d-flex align-items-center flex-grow-1">
-                            <img src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                                data-src="{{ uploaded_asset($product->thumbnail_img) }}"
-                                class="img-fit lazyload size-60px rounded"
-                                alt="{{ $product->getTranslation('name') }}">
-                            <span class="minw-0 pl-2 flex-grow-1">
-                                <span class="fw-600 mb-1 text-truncate-2">
-                                    {{ $product->getTranslation('name') }}
-                                </span>
-                                <span class="">{{ $cartItem['quantity'] }}x</span>
-                                {{-- <span
-                                    class="">{{ single_price($cartItem['price'] + $cartItem['tax']) }}</span> --}}
-                                <span class="">{{ cart_product_price($cartItem, $product) }}</span>
-                            </span>
-                        </a>
-                        <span class="">
-                            <button onclick="removeFromCart({{ $cartItem['id'] }})"
-                                class="btn btn-sm btn-icon stop-propagation">
-                                <i class="la la-close"></i>
-                            </button>
-                        </span>
-                    </span>
-                </li>
-                   @endif
                 @endif
             @endforeach
         </ul>
@@ -106,13 +77,13 @@ if (auth()->user() != null) {
         <div class="px-3 py-2 text-center border-top">
             <ul class="list-inline mb-0">
                 <li class="list-inline-item">
-                    <a href="{{ route('cart') }}" class="btn btn-soft-primary btn-sm">
+                    <a href="{{ route('rental') }}" class="btn btn-soft-primary btn-sm">
                         {{ translate('View cart') }}
                     </a>
                 </li>
                 @if (Auth::check())
                     <li class="list-inline-item">
-                        <a href="{{ route('checkout.shipping_info') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('rental') }}" class="btn btn-primary btn-sm">
                             {{ translate('Checkout') }}
                         </a>
                     </li>

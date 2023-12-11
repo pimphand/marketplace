@@ -72,8 +72,8 @@
                         <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
                             <a href="tel:{{ get_setting('helpline_number') }}" class="text-reset d-inline-block opacity-60 py-2">
                                 <i class="la la-phone"></i>
-                                <span>{{ translate('Help line')}}</span>  
-                                <span>{{ get_setting('helpline_number') }}</span>    
+                                <span>{{ translate('Help line')}}</span>
+                                <span>{{ get_setting('helpline_number') }}</span>
                             </a>
                         </li>
                     @endif
@@ -252,7 +252,6 @@
                         @include('frontend.partials.cart')
                     </div>
                 </div>
-
             </div>
         </div>
         @if(Route::currentRouteName() != 'home')
@@ -296,7 +295,7 @@
 
 @section('script')
     <script type="text/javascript">
-        
+
         function show_order_details(order_id)
         {
             $('#order-details-modal-body').html(null);

@@ -13,6 +13,7 @@ use App\Models\Address;
 use App\Models\Carrier;
 use App\Models\CombinedOrder;
 use App\Models\Product;
+use App\Models\RentalOrder;
 use App\Services\DuitkuService;
 use App\Utility\PayhereUtility;
 use App\Utility\NotificationUtility;
@@ -103,11 +104,23 @@ class CheckoutController extends Controller
 
     public function get_shipping_info(Request $request)
     {
-        $carts = Cart::where('user_id', Auth::user()->id)->get();
+        $carts = Cart::where('rental',1)->where('user_id', Auth::user()->id)->get();
         //        if (Session::has('cart') && count(Session::get('cart')) > 0) {
         if ($carts && count($carts) > 0) {
             $categories = Category::all();
             return view('frontend.shipping_info', compact('categories', 'carts'));
+        }
+        flash(translate('Your cart is empty'))->success();
+        return back();
+    }
+
+    public function get_shipping_info_rental(Request $request)
+    {
+        $carts = Cart::where('rental',1)->where('user_id', Auth::user()->id)->get();
+        $time_period = $request->time_period;
+        if ($carts && count($carts) > 0) {
+            $categories = Category::all();
+            return view('frontend.shipping_info_rental', compact('categories', 'carts','time_period'));
         }
         flash(translate('Your cart is empty'))->success();
         return back();
@@ -347,6 +360,35 @@ class CheckoutController extends Controller
         }
 
         return view('frontend.order_confirmed', compact('combined_order'));
+    }
+
+    public function order_confirmed_rental(Request $request)
+    {
+        $carts = Cart::where('rental',1)->where('user_id', Auth::user()->id)->get();
+        $datas = [];
+        foreach ($carts as $key => $cart) {
+            $data = RentalOrder::create([
+                "product_id" => $cart->product_id,
+                "user_id" => $cart->user_id,
+                "address" => $request->address_id,
+                "time_periode" => $request,
+                "type" => $request->time_period,
+                "type_payment" => null,
+                "payment_status" => null,
+                "status" => 10,
+                "start_date" => null,
+                "end_date" => null,
+                "price" => $cart->price,
+                "shipping" => null,
+                "quantity" => $cart->quantity,
+            ]);
+            $datas[] = $data;
+        }
+
+        Cart::where('user_id', auth()->id())
+            ->delete();
+
+        return view('frontend.order_confirmed_rental', compact('data'));
     }
 
     public function rajaongkir($address_id, $weight)

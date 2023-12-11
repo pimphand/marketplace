@@ -22,21 +22,8 @@
                     </div>
                     <div class="col">
                         <div class="text-center">
-                            <i class="la-3x mb-2 opacity-50 las la-truck"></i>
-                            <h3 class="fs-14 fw-600 d-none d-lg-block opacity-50">{{ translate('3. Delivery info') }}
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="text-center">
-                            <i class="la-3x mb-2 opacity-50 las la-credit-card"></i>
-                            <h3 class="fs-14 fw-600 d-none d-lg-block opacity-50">{{ translate('4. Payment') }}</h3>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="text-center">
                             <i class="la-3x mb-2 opacity-50 las la-check-circle"></i>
-                            <h3 class="fs-14 fw-600 d-none d-lg-block opacity-50">{{ translate('5. Confirmation') }}
+                            <h3 class="fs-14 fw-600 d-none d-lg-block opacity-50">{{ translate('4. Confirmation') }}
                             </h3>
                         </div>
                     </div>
@@ -49,14 +36,17 @@
 <section class="mb-4" id="cart-summary">
     <div class="container">
         @if ($carts && count($carts) > 0)
+        <form action="{{ route('checkout.shipping_info_rental') }}" method="post">
+            @csrf
         <div class="row">
-            <div class="col-xxl-8 col-xl-10 mx-auto">
+            <div class="col-xxl-12 col-xl-12 mx-auto">
                 <div class="shadow-sm bg-white p-3 p-lg-4 rounded text-left">
                     <div class="mb-4">
                         <div class="row gutters-5 d-none d-lg-flex border-bottom mb-3 pb-3">
                             <div class="col-md-5 fw-600">{{ translate('Product') }}</div>
                             <div class="col fw-600">{{ translate('Price') }}</div>
                             <div class="col fw-600">{{ translate('Tax') }}</div>
+                            <div class="col fw-600">{{ translate('Periode') }}</div>
                             <div class="col fw-600">{{ translate('Quantity') }}</div>
                             <div class="col fw-600">{{ translate('Total') }}</div>
                             <div class="col-auto fw-600">{{ translate('Remove') }}</div>
@@ -96,6 +86,14 @@
                                     <div class="col-lg col-4 order-2 order-lg-0 my-3 my-lg-0">
                                         <span class="opacity-60 fs-12 d-block d-lg-none">{{ translate('Tax') }}</span>
                                         <span class="fw-600 fs-16">{{ cart_product_tax($cartItem, $product) }}</span>
+                                    </div>
+
+                                    <div class="col-lg col-4 order-2 order-lg-0 my-3 my-lg-0">
+                                        <select name="time_period" class="fw-600 fs-16 form-control" id="">
+                                            @foreach ($product->rentals()->get() as $item)
+                                                <option value="{{ $item->time_period }}">{{ $item->time_period .' - '. $item->type }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
 
                                     <div class="col-lg col-6 order-4 order-lg-0">
@@ -153,12 +151,12 @@
                         </div>
                         <div class="col-md-6 text-center text-md-right">
                             @if (Auth::check())
-                            <a href="{{ route('checkout.shipping_info') }}" class="btn btn-success fw-600">
+                            <button type="submit" class="btn btn-success fw-600">
                                 {{ translate('Continue to Shipping') }}
-                            </a>
+                            </button>
                             @else
-                            <button class="btn btn-success fw-600" onclick="showCheckoutModal()">{{ translate('Continue
-                                to Shipping') }}</button>
+                            <button type="button" class="btn btn-success fw-600" onclick="showCheckoutModal()">
+                            {{ translate('Continue to Shipping') }}</button>
                             @endif
                         </div>
                     </div>
@@ -177,6 +175,7 @@
             </div>
         </div>
         @endif
+    </form>
     </div>
 </section>
 
@@ -307,12 +306,13 @@
         }
 
         function updateQuantity(key, element) {
-            $.post('{{ route('cart.updateQuantity') }}', {
+            $.post('{{ route('cart.updateQuantity.rental') }}', {
                 _token: AIZ.data.csrf,
                 id: key,
-                quantity: element.value
+                quantity: element.value,
+                time_period:$('#time_period').val()
             }, function(data) {
-                updateNavCart(data.nav_cart_view, data.cart_count);
+
                 $('#cart-summary').html(data.cart_view);
             });
         }

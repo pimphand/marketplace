@@ -513,6 +513,29 @@
             }
         }
 
+        function ajukanSewa(){
+            @if(Auth::check() && Auth::user()->user_type != 'customer')
+                AIZ.plugins.notify('warning', "{{ translate('Please Login as a customer to add products to the Cart.') }}");
+                return false;
+            @endif
+
+            if(checkAddToCartValidity()) {
+                $('#addToCart').modal();
+                $('.c-preloader').show();
+                $.ajax({
+                    type:"POST",
+                    url: '{{ route('cart.addToCart') }}',
+                    data: $('#option-choice-form').serializeArray(),
+                    success: function(data){
+                        window.location.href = "{{ route('rental') }}";
+                    }
+                });
+            }
+            else{
+                AIZ.plugins.notify('warning', "{{ translate('Please choose all the options') }}");
+            }
+        }
+
         function buyNow(){
             @if(Auth::check() && Auth::user()->user_type != 'customer')
                 AIZ.plugins.notify('warning', "{{ translate('Please Login as a customer to add products to the Cart.') }}");

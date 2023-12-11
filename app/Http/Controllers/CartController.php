@@ -17,7 +17,7 @@ class CartController extends Controller
         if(auth()->user() != null) {
             $user_id = Auth::user()->id;
             if($request->session()->get('temp_user_id')) {
-                Cart::where('temp_user_id', $request->session()->get('temp_user_id'))
+                Cart::where('rental',0)->where('temp_user_id', $request->session()->get('temp_user_id'))
                         ->update(
                                 [
                                     'user_id' => $user_id,
@@ -27,7 +27,7 @@ class CartController extends Controller
 
                 Session::forget('temp_user_id');
             }
-            $carts = Cart::where('user_id', $user_id)->get();
+            $carts = Cart::where('rental',0)->where('user_id', $user_id)->get();
         } else {
             $temp_user_id = $request->session()->get('temp_user_id');
             // $carts = Cart::where('temp_user_id', $temp_user_id)->get();
@@ -51,7 +51,7 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        
+
         $product = Product::find($request->id);
         $carts = array();
         $data = array();
@@ -164,6 +164,7 @@ class CartController extends Controller
             $data['product_referral_code'] = null;
             $data['cash_on_delivery'] = $product->cash_on_delivery;
             $data['digital'] = $product->digital;
+            $data['rental'] = $product->rental ?? 0;
 
             if ($request['quantity'] == null){
                 $data['quantity'] = 1;
@@ -231,7 +232,7 @@ class CartController extends Controller
                 $temp_user_id = $request->session()->get('temp_user_id');
                 $carts = Cart::where('temp_user_id', $temp_user_id)->get();
             }
-			
+
             return array(
                 'status' => 1,
                 'cart_count' => count($carts),
@@ -307,7 +308,7 @@ class CartController extends Controller
             $product_stock = $product->stocks->where('variant', $cartItem['variation'])->first();
             $quantity = $product_stock->qty;
             $price = $product_stock->price;
-			
+
 			//discount calculation
             $discount_applicable = false;
 
@@ -358,5 +359,91 @@ class CartController extends Controller
             'cart_view' => view('frontend.partials.cart_details', compact('carts'))->render(),
             'nav_cart_view' => view('frontend.partials.cart')->render(),
         );
+    }
+    //updated the quantity for a cart item
+    public function updateQuantityRental(Request $request)
+    {
+        $cartItem = Cart::findOrFail($request->id);
+
+        if($cartItem['id'] == $request->id){
+            $product = Product::find($cartItem['product_id']);
+            $product_stock = $product->stocks->where('variant', $cartItem['variation'])->first();
+            $quantity = $product_stock->qty;
+            $price = $product_stock->price;
+
+			//discount calculation
+            $discount_applicable = false;
+
+            if ($product->discount_start_date == null) {
+                $discount_applicable = true;
+            }
+            elseif (strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
+                strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date) {
+                $discount_applicable = true;
+            }
+
+            if ($discount_applicable) {
+                if($product->discount_type == 'percent'){
+                    $price -= ($price*$product->discount)/100;
+                }
+                elseif($product->discount_type == 'amount'){
+                    $price -= $product->discount;
+                }
+            }
+
+            if($quantity >= $request->quantity) {
+                if($request->quantity >= $product->min_qty){
+                    $cartItem['quantity'] = $request->quantity;
+                }
+            }
+
+            if($product->wholesale_product){
+                $wholesalePrice = $product_stock->wholesalePrices->where('min_qty', '<=', $request->quantity)->where('max_qty', '>=', $request->quantity)->first();
+                if($wholesalePrice){
+                    $price = $wholesalePrice->price;
+                }
+            }
+
+            $cartItem['price'] = $price;
+            $cartItem->save();
+        }
+
+        if(auth()->user() != null) {
+            $user_id = Auth::user()->id;
+            $carts = Cart::where('user_id', $user_id)->get();
+        } else {
+            $temp_user_id = $request->session()->get('temp_user_id');
+            $carts = Cart::where('temp_user_id', $temp_user_id)->get();
+        }
+
+        return array(
+            'cart_count' => count($carts),
+            'cart_view' => view('frontend.partials.cart_details_rental', compact('carts'))->render(),
+            'nav_cart_view' => view('frontend.partials.cart_rental')->render(),
+        );
+    }
+
+    public function rental(Request $request){
+        if(auth()->user() != null) {
+            $user_id = Auth::user()->id;
+            if($request->session()->get('temp_user_id')) {
+                Cart::where('rental',1)->where('temp_user_id', $request->session()->get('temp_user_id'))
+                        ->update(
+                                [
+                                    'user_id' => $user_id,
+                                    'temp_user_id' => null
+                                ]
+                );
+
+                Session::forget('temp_user_id');
+            }
+            $carts = Cart::where('rental',1)->where('user_id', $user_id)->get();
+        } else {
+            $temp_user_id = $request->session()->get('temp_user_id');
+            // $carts = Cart::where('temp_user_id', $temp_user_id)->get();
+            $carts = ($temp_user_id != null) ? Cart::where('temp_user_id', $temp_user_id)->get() : [] ;
+        }
+
+        return view('frontend.view_cart_rental', compact('carts'));
     }
 }

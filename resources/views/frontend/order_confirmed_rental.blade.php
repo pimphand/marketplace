@@ -18,18 +18,7 @@
                             <h3 class="fs-14 fw-600 d-none d-lg-block">{{ translate('2. Shipping info')}}</h3>
                         </div>
                     </div>
-                    <div class="col done">
-                        <div class="text-center text-success">
-                            <i class="la-3x mb-2 las la-truck"></i>
-                            <h3 class="fs-14 fw-600 d-none d-lg-block">{{ translate('3. Delivery info')}}</h3>
-                        </div>
-                    </div>
-                    <div class="col done">
-                        <div class="text-center text-success">
-                            <i class="la-3x mb-2 las la-credit-card"></i>
-                            <h3 class="fs-14 fw-600 d-none d-lg-block">{{ translate('4. Payment')}}</h3>
-                        </div>
-                    </div>
+
                     <div class="col active">
                         <div class="text-center text-primary">
                             <i class="la-3x mb-2 las la-check-circle"></i>
@@ -45,10 +34,6 @@
     <div class="container text-left">
         <div class="row">
             <div class="col-xl-8 mx-auto">
-                @php
-                $first_order = $combined_order->orders->first();
-                $payment = $first_order->duitku_payment->first();
-                @endphp
                 <div class="text-center py-4 mb-4">
                     <i class="la la-check-circle la-3x text-success mb-3"></i>
                     <h1 class="h3 mb-3 fw-600">{{ translate('Thank You for Your Order!')}}</h1>

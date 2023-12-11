@@ -1236,6 +1236,8 @@ class ComposerStaticInit0bdbfefda0692f1b1688329027d38867
         'App\\Models\\RajaOngkir\\City' => __DIR__ . '/../..' . '/app/Models/RajaOngkir/City.php',
         'App\\Models\\RajaOngkir\\Province' => __DIR__ . '/../..' . '/app/Models/RajaOngkir/Province.php',
         'App\\Models\\RefundRequest' => __DIR__ . '/../..' . '/app/Models/RefundRequest.php',
+        'App\\Models\\RentalOrder' => __DIR__ . '/../..' . '/app/Models/RentalOrder.php',
+        'App\\Models\\RentalOrderDetail' => __DIR__ . '/../..' . '/app/Models/RentalOrderDetail.php',
         'App\\Models\\RentalProduct' => __DIR__ . '/../..' . '/app/Models/RentalProduct.php',
         'App\\Models\\Review' => __DIR__ . '/../..' . '/app/Models/Review.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',

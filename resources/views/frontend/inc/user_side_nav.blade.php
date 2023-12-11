@@ -113,6 +113,13 @@
                                 @if($delivery_viewed > 0 || $payment_status_viewed > 0)<span class="badge badge-inline badge-success">{{ translate('New') }}</span>@endif
                             </a>
                         </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('rental_history.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['rental_history.index','rental_history.details'])}}">
+                                <i class="las la-file-alt aiz-side-nav-icon"></i>
+                                <span class="aiz-side-nav-text">{{ translate('Rental History') }}</span>
+                                @if($delivery_viewed > 0 || $payment_status_viewed > 0)<span class="badge badge-inline badge-success">{{ translate('New') }}</span>@endif
+                            </a>
+                        </li>
 
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('digital_purchase_history.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['digital_purchase_history.index'])}}">
@@ -130,7 +137,7 @@
                                 </a>
                             </li>
                         @endif
-                    
+
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('wishlists.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['wishlists.index'])}}">
                                 <i class="la la-heart-o aiz-side-nav-icon"></i>
@@ -153,7 +160,7 @@
                             </a>
                         </li>
                     @endif
-                    
+
                     @if(addon_is_activated('auction'))
                         <li class="aiz-side-nav-item">
                             <a href="javascript:void(0);" class="aiz-side-nav-link">
