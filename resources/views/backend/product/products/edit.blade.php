@@ -194,6 +194,82 @@
                         </div>
                     </div>
                 </div>
+
+                 <div class="card" id="form-sewa">
+                    <div class="card-header">
+                        <h5 class="mb-0 h6">{{translate('Rental Product')}}</h5>
+                    </div>
+                    <div class="card-body">
+                        @if ($product->rentals)
+                        @forelse ($product->rentals as $rental)
+                        <div class="form-group row gutters-5">
+                            <label class="col-lg-3 col-from-label">{{translate('Periode Waktu')}}</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" name="time_period[]"  placeholder="1,2,4" value="{{ $rental->time_period }}">
+                            </div>
+                            <div class="col-lg-3">
+                                <button type="button" class="btn btn-success" onclick="clone()"><i class="las la-plus"></i></button>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="form-group row gutters-5">
+                            <label class="col-lg-3 col-from-label">{{translate('Periode Waktu')}}</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" name="time_period[]"  placeholder="1,2,4" value="">
+                            </div>
+                            <div class="col-lg-3">
+                                <button type="button" class="btn btn-success" onclick="clone()"><i class="las la-plus"></i></button>
+                            </div>
+                        </div>
+                        @endforelse
+
+                        <div class="clone-rental"></div>
+
+                        <div class="form-group row gutters-5">
+                            <label class="col-lg-3 col-from-label">{{translate('Tipe')}}</label>
+                            <div class="col-lg-8">
+                                <select name="rental_type"  class="form-control" id="">
+                                    <option value="">Pilih Tipe</option>
+                                    @php
+                                        $rentalTypes = ['Hari','Minggu','Bulan'];
+                                    @endphp
+                                    @foreach ($rentalTypes as $rentalType)
+                                    <option value="{{ $rentalType }}" {{ count($product->rentals) > 0 ? ($product->rentals[0]->type == $rentalType ? 'selected' : '') : '' }} >{{ $rentalType }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @else
+
+                        <div class="form-group row gutters-5">
+                            <label class="col-lg-3 col-from-label">{{translate('Periode Waktu')}}</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" name="time_period[]"  placeholder="1,2,4">
+                            </div>
+                            <div class="col-lg-3">
+                                <button type="button" class="btn btn-success" onclick="clone()"><i class="las la-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="clone-rental"></div>
+
+                        <div class="form-group row gutters-5">
+                            <label class="col-lg-3 col-from-label">{{translate('Tipe')}}</label>
+                            <div class="col-lg-8">
+                                <select name="rental_type"  class="form-control" id="">
+                                    <option value="">Pilih Tipe</option>
+                                    @php
+                                        $rentalTypes = ['Hari','Minggu','Bulan'];
+                                    @endphp
+                                    @foreach ($rentalTypes as $rentalType)
+                                    <option value="{{ $rentalType }}" {{ count($product->rentals) > 0 ? ($product->rentals[0]->type == $rentalType ? 'selected' : '') : '' }} >{{ $rentalType }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0 h6">{{translate('Product Variation')}}</h5>
@@ -599,7 +675,7 @@
                             <label class="col-md-6 col-from-label">{{translate('Sewa')}}</label>
                             <div class="col-md-6">
                                 <label class="aiz-switch aiz-switch-success mb-0">
-                                    <input type="checkbox" name="rental" value="1" @if($product->rental == 1) checked @endif>
+                                    <input type="checkbox" name="rental" id="rental" value="1" @if($product->rental == 1) checked @endif>
                                     <span></span>
                                 </label>
                             </div>
@@ -884,6 +960,34 @@
         update_sku();
     });
 
+    function clone() {
+        let content = `
+        <div class="form-group row gutters-5">
+            <label class="col-lg-3 col-from-label"></label>
+            <div class="col-lg-6">
+                <input type="text" class="form-control" name="time_period[]" placeholder="1,2,4">
+            </div>
+            <div class="col-lg-3">
+                <button type="button" class="btn btn-danger" onclick="deleteClone(this)"><i class="las la-minus"></i></button>
+            </div>
+        </div>
+        `;
+
+        $('.clone-rental').append(content);
+    }
+
+    function deleteClone(button) {
+        // Find the parent div of the button and remove it
+        $(button).closest('.form-group').remove();
+    }
+
+    document.getElementById('rental').addEventListener('change', function () {
+        // Get the value of the checkbox
+        var isChecked = this.checked;
+
+        // Show/hide the card based on the checkbox state
+        document.getElementById('form-sewa').style.display = isChecked ? 'block' : 'none';
+    });
 </script>
 
 @endsection

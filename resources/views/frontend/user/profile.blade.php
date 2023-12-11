@@ -55,7 +55,33 @@
                         <input type="password" class="form-control" placeholder="{{ translate('Confirm Password') }}" name="confirm_password">
                     </div>
                 </div>
-
+            </div>
+            <div class="">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">{{ translate('Persyaratan Sewa')}}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">{{ translate('Photo KTP') }}</label>
+                        <div class="col-md-10">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="identity_card" value="{{ Auth::user()->identity_card }}" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">{{ translate('Alamat Sesuai KTP') }}</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" value="{{ Auth::user()->identity_address }}" placeholder="{{ translate('Alamat Sesuai KTP') }}" name="identity_address">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -174,7 +200,6 @@
 
 @section('script')
     <script type="text/javascript">
-        
         $('.new-email-verification').on('click', function() {
             $(this).find('.loading').removeClass('d-none');
             $(this).find('.default').addClass('d-none');
@@ -195,9 +220,8 @@
     </script>
 
     @if (get_setting('google_map') == 1)
-        
         @include('frontend.partials.google_map')
-        
+
     @endif
 
 @endsection

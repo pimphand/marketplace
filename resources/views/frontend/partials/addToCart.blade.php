@@ -229,7 +229,7 @@
 
                     <div class="row no-gutters pb-3 d-none" id="chosen_price_div">
                         <div class="col-2">
-                            <div class="opacity-50">{{ translate('Total Price')}}:</div>
+                            <div class="opacity-50">{{ translate('Total Price')}}: </div>
                         </div>
                         <div class="col-10">
                             <div class="product-price">
@@ -247,6 +247,28 @@
                             <i class="la la-shopping-cart"></i>
                             <span class="d-none d-md-inline-block">{{ translate('Add to cart')}}</span>
                         </button>
+                    @elseif($product->rental == 1 && $qty > 0)
+                    @if (Auth::user() && Auth::user()->identity_card == null)
+                    <a href="{{ route('profile') }}">
+                        <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart">
+                            <i class="la la-shopping-cart"></i>
+                            <span class="d-none d-md-inline-block"></span>
+                        </button>
+                    </a>
+                    @else
+                    @auth
+                    <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart" onclick="addToCart()">
+                        <i class="la la-shopping-cart"></i>
+                        <span class="d-none d-md-inline-block">{{ translate('Add to cart')}}</span>
+                    </button>
+                    @else
+                    <a href="{{ route('profile') }}">
+                        <button type="button" class="btn btn-primary buy-now fw-600 add-to-cart">
+                            <span class="d-none d-md-inline-block">Anda harus login dulu</span>
+                        </button>
+                    </a>
+                    @endauth
+                    @endif
                     @elseif($qty > 0)
                         @if ($product->external_link != null)
                             <a type="button" class="btn btn-soft-primary mr-2 add-to-cart fw-600" href="{{ $product->external_link }}">

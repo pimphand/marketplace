@@ -239,6 +239,60 @@ CoreComponentRepository::initializeCache();
                         </div>
                     </div>
                 </div>
+                <div class="card" id="form-rental">
+                    <div class="card-header">
+                        <h5 class="mb-0 h6">{{translate('Rental Product')}}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row gutters-5">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" value="{{translate('Colors')}}" disabled>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control aiz-selectpicker" data-live-search="true"
+                                    data-selected-text-format="count" name="colors[]" id="colors" multiple disabled>
+                                    @foreach (\App\Models\Color::orderBy('name', 'asc')->get() as $key => $color)
+                                    <option value="{{ $color->code }}"
+                                        data-content="<span><span class='size-15px d-inline-block mr-2 rounded border' style='background:{{ $color->code }}'></span><span>{{ $color->name }}</span></span>">
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input value="1" type="checkbox" name="colors_active">
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group row gutters-5">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" value="{{translate('Attributes')}}" disabled>
+                            </div>
+                            <div class="col-md-8">
+                                <select name="choice_attributes[]" id="choice_attributes"
+                                    class="form-control aiz-selectpicker" data-selected-text-format="count"
+                                    data-live-search="true" multiple
+                                    data-placeholder="{{ translate('Choose Attributes') }}">
+                                    @foreach (\App\Models\Attribute::all() as $key => $attribute)
+                                    <option value="{{ $attribute->id }}">{{ $attribute->getTranslation('name') }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <p>{{ translate('Choose the attributes of this product and then input values of each
+                                attribute') }}</p>
+                            <br>
+                        </div>
+
+                        <div class="customer_choice_options" id="customer_choice_options">
+
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0 h6">{{translate('Product price + stock')}}</h5>
@@ -590,7 +644,7 @@ CoreComponentRepository::initializeCache();
                             <label class="col-md-6 col-from-label">{{translate('Sewa')}}</label>
                             <div class="col-md-6">
                                 <label class="aiz-switch aiz-switch-success mb-0">
-                                    <input type="checkbox" name="rent" value="1">
+                                    <input type="checkbox" id="rental" name="rental" value="1">
                                     <span></span>
                                 </label>
                             </div>
@@ -848,6 +902,13 @@ CoreComponentRepository::initializeCache();
         });
 
         update_sku();
+    });
+
+    $('#rental').click(function (e) {
+        e.preventDefault();
+        let content = `
+
+        `
     });
 
 </script>

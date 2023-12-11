@@ -173,6 +173,8 @@ class HomeController extends Controller
         }
 
         $user->avatar_original = $request->photo;
+        $user->identity_card  = $request->identity_card ;
+        $user->identity_address  = $request->identity_address ;
         $user->save();
 
         flash(translate('Your Profile has been updated successfully!'))->success();
@@ -683,5 +685,10 @@ class HomeController extends Controller
         ]);
 
         return $service;
+    }
+
+    public function checkoutRental() {
+
+        return view('');
     }
 }

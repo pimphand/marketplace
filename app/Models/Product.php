@@ -78,4 +78,8 @@ class Product extends Model
     {
         return $query->where('digital', 0);
     }
+
+    public function rentals() {
+        return $this->hasMany(RentalProduct::class,'product_id','id');
+    }
 }

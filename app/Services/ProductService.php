@@ -288,6 +288,15 @@ class ProductService
 
         $product->update($data);
 
+        if (isset($data['rental_type']) && $data['rental_type'] != null && $data['rental'] != null) {
+            $product->rentals()->delete();
+            foreach ($data['time_period'] as $key => $time) {
+                $product->rentals()->create([
+                    "type" => $data['rental_type'],
+                    "time_period" => $time
+                ]);
+            }
+        }
         return $product;
     }
 }
