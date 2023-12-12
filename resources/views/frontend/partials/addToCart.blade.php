@@ -252,7 +252,7 @@
                     <a href="{{ route('profile') }}">
                         <button type="button" class="btn btn-success buy-now fw-600 add-to-cart">
                             <i class="la la-shopping-cart"></i>
-                            <span class="d-none d-md-inline-block"></span>
+                            <span class="d-none d-md-inline-block">{{ translate('Anda harus melengkapi profil') }}</span>
                         </button>
                     </a>
                     @else
