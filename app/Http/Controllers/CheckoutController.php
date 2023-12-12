@@ -364,6 +364,8 @@ class CheckoutController extends Controller
 
     public function order_confirmed_rental(Request $request)
     {
+        $time = json_decode($request->time_period);
+
         $carts = Cart::where('rental',1)->where('user_id', Auth::user()->id)->get();
         $datas = [];
         foreach ($carts as $key => $cart) {
@@ -371,8 +373,8 @@ class CheckoutController extends Controller
                 "product_id" => $cart->product_id,
                 "user_id" => $cart->user_id,
                 "address" => $request->address_id,
-                "time_periode" => $request,
-                "type" => $request->time_period,
+                "time_periode" => $time->time_period,
+                "type" => $time->type,
                 "type_payment" => null,
                 "payment_status" => null,
                 "status" => 10,
@@ -388,7 +390,7 @@ class CheckoutController extends Controller
         Cart::where('user_id', auth()->id())
             ->delete();
 
-        return view('frontend.order_confirmed_rental', compact('data'));
+        return redirect(route('rental_history.index'));
     }
 
     public function rajaongkir($address_id, $weight)

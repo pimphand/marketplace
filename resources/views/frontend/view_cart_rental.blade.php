@@ -91,7 +91,7 @@
                                     <div class="col-lg col-4 order-2 order-lg-0 my-3 my-lg-0">
                                         <select name="time_period" class="fw-600 fs-16 form-control" id="">
                                             @foreach ($product->rentals()->get() as $item)
-                                                <option value="{{ $item->time_period }}">{{ $item->time_period .' - '. $item->type }}</option>
+                                                <option value="{{ $item }}">{{ $item->time_period .' - '. $item->type }}</option>
                                             @endforeach
                                         </select>
                                     </div>
